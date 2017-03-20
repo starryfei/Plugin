@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="starry" default="deploy" basedir="E:/yafei/starry">
-	 <property file="build.properties"/>
 	<property environment="env" />
+	 <property file="build.properties"/>
 	<property name="webapp.name" value="starry" />
 	<property name="catalina.home" value="D:/software/apache-tomcat-7.0.39-windows-x86/apache-tomcat-7.0.39" />
 	<property name="dist.dir" value="${basedir}/dist" />
