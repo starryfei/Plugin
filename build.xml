@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="starry" default="deploy" basedir="E:/yafei/starry">
+	 <property file="build.properties"/>
+	<property environment="env" />
+	<property name="webapp.name" value="starry" />
+	<property name="catalina.home" value="D:/software/apache-tomcat-7.0.39-windows-x86/apache-tomcat-7.0.39" />
+	<property name="dist.dir" value="${basedir}/dist" />
+	<property name="anAt.dir" value="D:/software/apache-ant-1.9.9" />
+	<property name="webRoot.dir" value="${basedir}/WebContent" />
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="config.dir" value="${basedir}/src" />
+	<property name="lib.dir" value="${webRoot.dir}/WEB-INF/lib" />
+	<property name="build.dir" value="${basedir}/build" />
+	<!-- 使用eclipse jdt进行编译，而不使用JDK编译  -->
+	<!--  <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />  -->
+
+	<!-- 初始化classpath -->
+	<path id="project.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<!-- 添加tomcat类路径 -->
+		<fileset dir="${catalina.home}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<!-- ant lib包  -->
+		<fileset dir="${ant.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- get the source compile classpath in a printable form -->
+	<pathconvert pathsep="${line.separator}|   |-- "  
+             property="echo.path.compile"  
+             refid="project.classpath">
+	</pathconvert>
+
+	<!-- show classpath jars -->
+	<target name="print_classpath">
+		<echo message="|-- compile classpath"/>
+		<echo message="|   |"/>
+		<echo message="|   |-- ${echo.path.compile}"/>
+	</target>
+
+
+	<!-- 删除之前的目录结构 -->
+	<target name="clear" description="清理旧文件">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete file="${catalina.home}/webapps/${webapp.name}.war" />
+		<delete dir="${catalina.home}/webapps/${webapp.name}" />
+	</target>
+
+	<!-- 创建目录结构 -->
+	<target name="init" depends="clear"  description="创建初始化目录结构">  
+		<mkdir dir="${build.dir}/classes" />
+		<mkdir dir="${dist.dir}" />
+	</target>
+	
+	<!-- 创建日志信息文件-->
+	 <target name="generateCodeVersion" depends="init" description="创建日志信息">
+	        <exec executable="svn" output="${webRoot.dir}/log.html" failonerror="false" failifexecutionfails="false">
+	            <!--<arg line="info"/>-->
+	        	<arg line="log -r 5 https://yafeiqinL.hirain.com/svn/starryfei/starry"/>
+	        </exec>
+	    </target>
+	<!-- 编译java -->
+	<target name="compile" depends="generateCodeVersion" description="编译java文件">
+		<echo message="begin compile..." />
+		<javac srcdir="${src.dir}" destdir="${build.dir}/classes"   
+            includeantruntime="false" nowarn="on"   
+            source="1.6" target="1.6" deprecation="true" debug="true"   
+            encoding="UTF-8" classpathref="project.classpath"   
+            >
+			<compilerarg line="-Xlint:unchecked" />
+			<!-- <classpath refid="project.classpath" /> -->
+		</javac>
+		<copy todir="${build.dir}" overwrite="true">
+			<fileset dir="${src.dir}">
+				<include name="**/*.xml" />
+				<include name="**/*.properties" />
+				<include name="**/*.sql" />
+			</fileset>
+			<fileset dir="${config.dir}">
+				<include name="**/*.xml" />
+				<include name="**/*.properties" />
+				<include name="**/*.sql" />
+			</fileset>
+		</copy>
+		<echo message="end compile..." />
+	</target>
+
+	<!-- 将class文件打成 jar包 -->
+	<!--    
+        <target name="pack" depends="compile">   
+            <jar jarfile="${build.dir}/${webapp.name}.jar">   
+                <fileset dir="${build.dir}/classes">   
+                    <include name="**/*.class"/>   
+                </fileset>   
+            </jar>   
+        </target>   
+    -->
+
+	<!-- 打成war包, 名称默认为 项目名 -->
+	<target name="war" depends="compile" description="将工程打成war包">
+		<echo message="begin war..." />
+		<war destfile="${dist.dir}/${webapp.name}.war" basedir="${webRoot.dir}"   
+            webxml="${webRoot.dir}/WEB-INF/web.xml">
+			<lib dir="${lib.dir}" />
+			<classes dir="${build.dir}/classes" />
+			<fileset dir="${webRoot.dir}">
+				<include name="***.*" />
+			</fileset>
+		</war>
+		<echo message="end war..." />
+	</target>
+
+	<!-- copy war包 tomcat的deploy目录   overwrite="ture"-->
+	<target name="deploy" depends="war" description="部署项目">
+		<echo message="begin deploy..." />
+		<copy file="${dist.dir}/${webapp.name}.war" todir="${catalina.home}/webapps" overwrite="ture" />
+		<echo message="end deploy..." />
+	</target>
+	
+
+	
+</project>
