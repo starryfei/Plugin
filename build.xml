@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="starry" default="deploy" basedir="E:/yafei/starry">
+<project name="starry" default="deploy" ><!--basedir="E:/yafei/starry"-->
 	<property environment="env" />
-	 <property file="build.properties"/>
-	<property name="webapp.name" value="starry" />
+<!-- 	<property file="build.properties"/>
+	<property name="webapp.name" value="starry" />-->
 	<property name="catalina.home" value="D:/software/apache-tomcat-7.0.39-windows-x86/apache-tomcat-7.0.39" />
 	<property name="dist.dir" value="${basedir}/dist" />
-	<property name="anAt.dir" value="D:/software/apache-ant-1.9.9" />
+	<property name="ant.dir" value="D:/software/apache-ant-1.9.9" />
 	<property name="webRoot.dir" value="${basedir}/WebContent" />
 	<property name="src.dir" value="${basedir}/src" />
 	<property name="config.dir" value="${basedir}/src" />
@@ -61,7 +61,7 @@
 	 <target name="generateCodeVersion" depends="init" description="创建日志信息">
 	        <exec executable="svn" output="${webRoot.dir}/log.html" failonerror="false" failifexecutionfails="false">
 	            <!--<arg line="info"/>-->
-	        	<arg line="log -r 5 https://yafeiqinL.hirain.com/svn/starryfei/starry"/>
+	        	<arg line="log -r ${svn.version} ${svn.url}/${webapp.name}"/>
 	        </exec>
 	    </target>
 	<!-- 编译java -->
