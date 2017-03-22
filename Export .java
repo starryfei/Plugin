@@ -3,7 +3,7 @@ package com.starryfei;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class write_Properties {
+public class Export {
 
 	private static String svn_url = null;
 	private static String webapp_name = null;
@@ -24,11 +24,13 @@ public class write_Properties {
 				+ webapp_name + " -Dsvn.version=" + get_version + " -Dbasedir="
 				+ basedir;
 		String cmd1 = "cd /d " + basedir;
-		//String delete = "cd.. " + "&&" + "rd/s/q" + basedir;
+		String back = "cd.." ;
+		String delete="rd/s/q " + basedir;
 		System.out.println(build);
 		try {
-			Process process = Runtime.getRuntime().exec(
-					"cmd /c " + cmd + "&&" + cmd1 + "&&" + build + "&&cmd");
+			 Runtime.getRuntime().exec(
+					"cmd /c " + cmd + "&&" + cmd1 + "&&" + build + "&&"
+							+ back + "&&"+delete);
 			System.out.println("-----------------success-----------------");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -49,7 +51,7 @@ public class write_Properties {
 		Scanner scVersion = new Scanner(System.in);
 		String version = scVersion.next();
 
-		System.out.println("请输入存放路径：格式如:d:\123");
+		System.out.println("请输入存放路径(格式如:d:\\123):");
 		Scanner scPath = new Scanner(System.in);
 		String path = scPath.next();
 
@@ -59,5 +61,4 @@ public class write_Properties {
 		basedir = path;
 
 	}
-
 }
