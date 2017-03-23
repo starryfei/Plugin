@@ -72,7 +72,7 @@
 	    </target>-	
 	-->
 <!-- 编译java -->
-	<target name="compile" depends="generateCodeVersion" description="编译java文件">
+	<target name="compile" depends="log" description="编译java文件">
 		<echo message="begin compile..." />
 		<javac srcdir="${src.dir}" destdir="${build.dir}/classes"   
             includeantruntime="false" nowarn="on"   
@@ -127,6 +127,16 @@
 		<echo message="begin deploy..." />
 		<copy file="${dist.dir}/${webapp.name}.war" todir="${catalina.home}/webapps" overwrite="ture" />
 		<echo message="end deploy..." />
+		<!-- 
+		删除指定目录下的所有文件和目录，包括指定目录
+		<delete  includeEmptyDirs="true">
+		<fileset dir="${basedir}/${webapp.name}"/>
+		</delete>
+		
+		<delete  includeEmptyDirs="true">
+			<fileset dir="${basedir}/log.html"/>
+			</delete>
+		-->
 	</target>
 	
 
