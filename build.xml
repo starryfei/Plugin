@@ -57,14 +57,21 @@
 		<mkdir dir="${dist.dir}" />
 	</target>
 	
-	<!-- 创建日志信息文件-->
+	<!-- 创建日志信息文件,从外部复制过去-->
+	<target name="log" depends="init" description="导入日志文件">
+			<echo message="begin copy..." />
+			<copy file="${basedir}/log.html" todir="${webRoot.dir}" overwrite="ture" />
+			<echo message="end copy..." />
+		</target>
+	<!--
 	 <target name="generateCodeVersion" depends="init" description="创建日志信息">
 	        <exec executable="svn" output="${webRoot.dir}/log.html" failonerror="false" failifexecutionfails="false">
-	            <!--<arg line="info"/>-->
+	                <arg line="info"/>
 	        	<arg line="log -r ${svn.version} ${svn.url}/${webapp.name}"/>
 	        </exec>
-	    </target>
-	<!-- 编译java -->
+	    </target>-	
+	-->
+<!-- 编译java -->
 	<target name="compile" depends="generateCodeVersion" description="编译java文件">
 		<echo message="begin compile..." />
 		<javac srcdir="${src.dir}" destdir="${build.dir}/classes"   
