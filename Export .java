@@ -9,29 +9,38 @@ public class Export {
 	private static String webapp_name = null;
 	private static String basedir = null;
 	private static String get_version = null;
-
+	private static String before_url = null;
+	private static String log_cmd =null;
+	private static String log_path=null;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		Export_log el = new Export_log();
 		print();
+		el.createHtml(log_path);
+		String info =el.readLog(log_cmd);
+		el.JspToHtmlFile(log_path, info);
 		runBat();
 	}
 
 	private static void runBat() {
 		// TODO Auto-generated method stub
-		String cmd = "svn export -r " + get_version + " " + svn_url + "/"
-				+ webapp_name + " " + basedir;
-		String build = "call ant -Dsvn.url=" + svn_url + " -Dwebapp.name="
+		String cmd = "svn export -r " + get_version + " " + svn_url + " "
+				+ basedir + "\\" + webapp_name;
+		String build = "call ant -Dsvn.url=" + before_url + " -Dwebapp.name="
 				+ webapp_name + " -Dsvn.version=" + get_version + " -Dbasedir="
 				+ basedir;
-		String cmd1 = "cd /d " + basedir;
-		String back = "cd.." ;
-		String delete="rd/s/q " + basedir;
+		String cmd1 = "cd /d " + basedir+"\\"+webapp_name;
+		String back = "cd..";
+		String delete = "rd/s/q " + basedir+"\\"+webapp_name;
+		String delete1 = "del " + basedir + "\\log.html";
 		System.out.println(build);
+		System.out.println(cmd);
 		try {
-			 Runtime.getRuntime().exec(
-					"cmd /c " + cmd + "&&" + cmd1 + "&&" + build + "&&"
-							+ back + "&&"+delete);
+			Runtime.getRuntime().exec(
+					"cmd /c " + cmd + "&&" + cmd1 + "&&" + build + "&&" + back
+							+ "&&" + delete+"&&"+delete1);
 			System.out.println("-----------------success-----------------");
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,24 +50,20 @@ public class Export {
 	public static void print() {
 		System.out.println("请输入SVN地址：");
 		Scanner scUrl = new Scanner(System.in);
-		String url = scUrl.next();
-
-		System.out.println("请输入项目名称：");
-		Scanner scName = new Scanner(System.in);
-		String name = scName.next();
+		svn_url = scUrl.next();
 
 		System.out.println("请输入SVN版本号：");
 		Scanner scVersion = new Scanner(System.in);
-		String version = scVersion.next();
+		get_version = scVersion.next();
 
-		System.out.println("请输入存放路径(格式如:d:\\123):");
-		Scanner scPath = new Scanner(System.in);
-		String path = scPath.next();
-
-		svn_url = url.toString();
-		webapp_name = name.toString();
-		get_version = version;
-		basedir = path;
-
+		int index = svn_url.lastIndexOf("/");
+		before_url = svn_url.substring(0, index);
+		webapp_name = svn_url.substring(index + 1);
+		basedir = System.getProperty("user.dir");
+		System.out.println("user_dir:" + basedir);
+		log_cmd="svn log -r"+get_version+" "+svn_url;
+		log_path=basedir+"\\log.html";
+		
 	}
+
 }
