@@ -82,7 +82,7 @@
 			<compilerarg line="-Xlint:unchecked" />
 			<!-- <classpath refid="project.classpath" /> -->
 		</javac>
-		<copy todir="${build.dir}" overwrite="true">
+		<copy todir="${build.dir}/classes" overwrite="true">
 			<fileset dir="${src.dir}">
 				<include name="**/*.xml" />
 				<include name="**/*.properties" />
